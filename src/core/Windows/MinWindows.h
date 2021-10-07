@@ -1,0 +1,6 @@
+#ifndef DRAGONENGINE_MINWINDOWS_H
+#define DRAGONENGINE_MINWINDOWS_H
+
+#include <Windows.h>
+
+#endif //DRAGONENGINE_MINWINDOWS_H
