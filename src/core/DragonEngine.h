@@ -1,7 +1,7 @@
 #ifndef DRAGONENGINE_DRAGONENGINE_H
 #define DRAGONENGINE_DRAGONENGINE_H
 
-#include "Windows/Window.h"
+#include "windows/Window.h"
 
 class DragonEngine {
 public:

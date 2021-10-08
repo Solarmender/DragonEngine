@@ -1,4 +1,5 @@
 #include "Window.h"
+#include <exception>
 
 Window::Window()
 {
@@ -17,7 +18,7 @@ Window::Window()
     if(hwnd == nullptr)
     {
         // TODO: Handle Window Errors
-        abort();
+        throw std::exception();
     }
 
     ShowWindow(hwnd, SW_SHOW);
