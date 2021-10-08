@@ -1,8 +1,11 @@
 #include "Window.h"
+#include "../DragonEngine.h"
 #include <exception>
 
-Window::Window()
+Window::Window(DragonEngine* parentEngine)
 {
+    engine = parentEngine;
+
     HWND hwnd = CreateWindowExW(
             0,
             WindowsApp::getClassName(),
@@ -51,7 +54,7 @@ HWND Window::getWindow()
     return hWnd;
 }
 
-LRESULT Window::messageSetup(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT Window::messageSetup(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
     if(msg == WM_NCCREATE)
     {
@@ -67,34 +70,47 @@ LRESULT Window::messageSetup(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
-LRESULT Window::messageForwarder(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT Window::messageForwarder(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
     Window* const pWnd = reinterpret_cast<Window*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
 
     return pWnd->messageHandler(hwnd, msg, wParam, lParam);
 }
 
-LRESULT Window::messageHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT Window::messageHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
     switch( msg )
     {
         case WM_CLOSE:
             PostQuitMessage(0);
             return 0;
+        case WM_KEYDOWN:
+            break;
+        case WM_KEYUP:
+            break;
     }
-    return DefWindowProc(hwnd, msg, wParam, lParam);
+    return DefWindowProcW(hwnd, msg, wParam, lParam);
 }
 
 WindowsApp::WindowsApp()
 {
     appModule = GetModuleHandleW(nullptr);
 
-    WNDCLASSW wc{ };
-    wc.lpfnWndProc = Window::messageSetup;
-    wc.hInstance = appModule;
-    wc.lpszClassName = className;
+    WNDCLASSEXW wcex{ };
+    wcex.cbSize = sizeof(WNDCLASSEXW);
+    wcex.style = 0;
+    wcex.lpfnWndProc = Window::messageSetup;
+    wcex.cbClsExtra = 0;
+    wcex.cbWndExtra = 0;
+    wcex.hInstance = appModule;
+    wcex.hIcon = nullptr;
+    wcex.hCursor = nullptr;
+    wcex.hbrBackground = nullptr;
+    wcex.lpszMenuName = nullptr;
+    wcex.lpszClassName = className;
+    wcex.hIconSm = nullptr;
 
-    RegisterClassW(&wc);
+    RegisterClassExW(&wcex);
 }
 
 WindowsApp::~WindowsApp()
@@ -116,4 +132,9 @@ WindowsApp& WindowsApp::getSingleton()
 {
     static WindowsApp appInstance;
     return appInstance;
+}
+
+DragonEngine* Window::getEngine()
+{
+    return engine;
 }

@@ -1,6 +1,6 @@
+#include "core/windows/MinWindows.h"
 #include "core/DragonEngine.h"
 #include "core/logger/Logger.h"
-#include "core/windows/MinWindows.h"
 #include <exception>
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
