@@ -13,7 +13,6 @@ public:
     static bool processMessages();
 
     HWND getWindow();
-    DragonEngine* getEngine();
 
     static LRESULT CALLBACK messageSetup(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
     static LRESULT CALLBACK messageForwarder(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
@@ -22,8 +21,6 @@ private:
     HWND hWnd;
 
     DragonEngine* engine;
-
-    friend class WindowsApp;
 };
 
 // Singleton that represents win32 app

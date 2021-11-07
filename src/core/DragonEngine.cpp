@@ -1,7 +1,7 @@
 #include "DragonEngine.h"
 #include "logger/Logger.h"
 
-DragonEngine::DragonEngine() : mainWindow(this)
+DragonEngine::DragonEngine() : mainWindow(this), graphics(this)
 {
     continueRunning = true;
 
@@ -22,11 +22,6 @@ void DragonEngine::start()
             return;
         }
 
-        if( input.isPressed( 'A' ))
-        {
-            throw std::exception();
-        }
-
         // Other loop things
     }
 }
@@ -34,6 +29,11 @@ void DragonEngine::start()
 Window* DragonEngine::getWindow()
 {
     return &mainWindow;
+}
+
+GraphicsSystem* DragonEngine::getGraphics()
+{
+    return &graphics;
 }
 
 InputSystem* DragonEngine::getInput()

@@ -10,7 +10,7 @@ add_executable(DragonEngine WIN32
         core/logger/FileSink.cpp
         core/logger/FileSink.h
         core/input/InputSystem.cpp
-        core/input/InputSystem.h)
+        core/input/InputSystem.h core/graphics/GraphicsSystem.cpp core/graphics/GraphicsSystem.h)
 
 set_property(TARGET DragonEngine PROPERTY CXX_STANDARD 20)
 set_property(TARGET DragonEngine PROPERTY CXX_STANDARD_REQUIRED ON)

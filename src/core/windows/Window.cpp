@@ -15,7 +15,7 @@ Window::Window(DragonEngine* parentEngine)
             nullptr,
             nullptr,
             WindowsApp::getModule(),
-            nullptr
+            this
     );
 
     if(hwnd == nullptr)
@@ -85,8 +85,10 @@ LRESULT Window::messageHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
             PostQuitMessage(0);
             return 0;
         case WM_KEYDOWN:
+            engine->getInput()->keyPressed(wParam);
             break;
         case WM_KEYUP:
+            engine->getInput()->keyReleased(wParam);
             break;
     }
     return DefWindowProcW(hwnd, msg, wParam, lParam);
@@ -132,9 +134,4 @@ WindowsApp& WindowsApp::getSingleton()
 {
     static WindowsApp appInstance;
     return appInstance;
-}
-
-DragonEngine* Window::getEngine()
-{
-    return engine;
 }
