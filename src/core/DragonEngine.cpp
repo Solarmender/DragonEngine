@@ -15,6 +15,8 @@ DragonEngine::~DragonEngine()
 
 void DragonEngine::start()
 {
+    // Setup game
+
     while(continueRunning)
     {
         if(Window::processMessages())
@@ -22,7 +24,13 @@ void DragonEngine::start()
             return;
         }
 
-        // Other loop things
+        graphics.clearScreen();
+
+        gameScene.update();
+
+        gameScene.render();
+
+        graphics.presentFrame();
     }
 }
 

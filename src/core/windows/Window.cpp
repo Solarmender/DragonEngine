@@ -1,12 +1,12 @@
 #include "Window.h"
 #include "../DragonEngine.h"
-#include <exception>
+#include <stdexcept>
 
 Window::Window(DragonEngine* parentEngine)
 {
     engine = parentEngine;
 
-    HWND hwnd = CreateWindowExW(
+    hWnd = CreateWindowExW(
             0,
             WindowsApp::getClassName(),
             L"DragonEngine",
@@ -18,13 +18,13 @@ Window::Window(DragonEngine* parentEngine)
             this
     );
 
-    if(hwnd == nullptr)
+    if(hWnd == nullptr)
     {
         // TODO: Handle Window Errors
-        throw std::exception();
+        throw std::runtime_error("Failed to create window");
     }
 
-    ShowWindow(hwnd, SW_SHOW);
+    ShowWindow(hWnd, SW_SHOW);
 }
 
 Window::~Window()

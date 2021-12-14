@@ -7,7 +7,7 @@ class DragonEngine;
 
 class Window {
 public:
-    Window(DragonEngine* parentEngine);
+    explicit Window(DragonEngine* parentEngine);
     ~Window();
 
     static bool processMessages();

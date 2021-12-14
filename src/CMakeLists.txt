@@ -10,8 +10,16 @@ add_executable(DragonEngine WIN32
         core/logger/FileSink.cpp
         core/logger/FileSink.h
         core/input/InputSystem.cpp
-        core/input/InputSystem.h core/graphics/GraphicsSystem.cpp core/graphics/GraphicsSystem.h)
+        core/input/InputSystem.h
+        core/graphics/GraphicsSystem.cpp
+        core/graphics/GraphicsSystem.h
+        core/entities/Entity.cpp
+        core/entities/Entity.h
+        core/entities/Scene.cpp
+        core/entities/Scene.h)
 
 set_property(TARGET DragonEngine PROPERTY CXX_STANDARD 20)
 set_property(TARGET DragonEngine PROPERTY CXX_STANDARD_REQUIRED ON)
 set_property(TARGET DragonEngine PROPERTY CXX_EXTENSIONS OFF)
+
+target_link_libraries(DragonEngine PRIVATE d3d11)
