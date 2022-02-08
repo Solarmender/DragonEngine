@@ -1,5 +1,6 @@
 #include "GraphicsSystem.h"
 #include "../DragonEngine.h"
+#include "../logger/Logger.h"
 #include <stdexcept>
 
 GraphicsSystem::GraphicsSystem(DragonEngine* parentEngine)
@@ -10,14 +11,6 @@ GraphicsSystem::GraphicsSystem(DragonEngine* parentEngine)
     device = nullptr;
     deviceContext = nullptr;
     backbuffer = nullptr;
-
-    RECT clientRect{ };
-    if(!GetClientRect(engine->getWindow()->getWindow(), &clientRect))
-    {
-        throw std::runtime_error("Failed to get window size");
-    }
-    clientWidth = clientRect.right - clientRect.left;
-    clientHeight = clientRect.bottom - clientRect.top;
 
     initDevice();
     initBackbuffer();
@@ -41,8 +34,30 @@ void GraphicsSystem::presentFrame()
     swapchain->Present(0, 0);
 }
 
+void GraphicsSystem::onResize()
+{
+    if(swapchain)
+    {
+        cleanupBackbuffer();
+
+        HRESULT hr = swapchain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
+        if(FAILED(hr))
+        {
+            throw std::runtime_error("Failed to resize swapchain");
+        }
+
+        initBackbuffer();
+        setViewport();
+    }
+}
+
 void GraphicsSystem::initDevice()
 {
+    RECT clientRect = engine->getWindow()->getWindowSize();
+
+    int clientWidth = clientRect.right - clientRect.left;
+    int clientHeight = clientRect.bottom - clientRect.top;
+
     DXGI_SWAP_CHAIN_DESC swapDesc{ };
     swapDesc.BufferCount = 1;
     swapDesc.BufferDesc.Width = clientWidth;
@@ -69,8 +84,12 @@ void GraphicsSystem::initDevice()
 void GraphicsSystem::cleanupDevice()
 {
     swapchain->Release();
-    device->Release();
     deviceContext->Release();
+    device->Release();
+
+    swapchain = nullptr;
+    deviceContext = nullptr;
+    device = nullptr;
 }
 
 void GraphicsSystem::initBackbuffer()
@@ -80,13 +99,13 @@ void GraphicsSystem::initBackbuffer()
     HRESULT hr = swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&tempBackbuffer);
     if(FAILED(hr))
     {
-        throw std::runtime_error("Failed to get backbuffer");
+        throw std::runtime_error("Failed to create buffer");
     }
 
     hr = device->CreateRenderTargetView(tempBackbuffer, nullptr, &backbuffer);
     if(FAILED(hr))
     {
-        throw std::runtime_error("Failed to get backbuffer");
+        throw std::runtime_error("Failed to create backbuffer");
     }
 
     tempBackbuffer->Release();
@@ -96,7 +115,12 @@ void GraphicsSystem::initBackbuffer()
 
 void GraphicsSystem::cleanupBackbuffer()
 {
+    deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+
     backbuffer->Release();
+    backbuffer = nullptr;
+
+    deviceContext->Flush();
 }
 
 void GraphicsSystem::setViewport()

@@ -1,16 +1,29 @@
 #include "DragonEngine.h"
 #include "logger/Logger.h"
 
-DragonEngine::DragonEngine() : mainWindow(this), graphics(this)
+DragonEngine::DragonEngine()
 {
     continueRunning = true;
+
+    mainWindow = nullptr;
+    graphics = nullptr;
+    input = nullptr;
+    gameScene = nullptr;
+
+    mainWindow = new Window(this);
+    graphics = new GraphicsSystem(this);
+    input = new InputSystem();
+    gameScene = new Scene();
 
     Logger::init();
 }
 
 DragonEngine::~DragonEngine()
 {
-
+    delete gameScene;
+    delete input;
+    delete graphics;
+    delete mainWindow;
 }
 
 void DragonEngine::start()
@@ -21,30 +34,31 @@ void DragonEngine::start()
     {
         if(Window::processMessages())
         {
-            return;
+            continueRunning = false;
+            break;
         }
 
-        graphics.clearScreen();
+        graphics->clearScreen();
 
-        gameScene.update();
+        gameScene->update();
 
-        gameScene.render();
+        gameScene->render();
 
-        graphics.presentFrame();
+        graphics->presentFrame();
     }
 }
 
 Window* DragonEngine::getWindow()
 {
-    return &mainWindow;
+    return mainWindow;
 }
 
 GraphicsSystem* DragonEngine::getGraphics()
 {
-    return &graphics;
+    return graphics;
 }
 
 InputSystem* DragonEngine::getInput()
 {
-    return &input;
+    return input;
 }

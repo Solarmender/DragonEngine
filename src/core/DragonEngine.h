@@ -19,10 +19,10 @@ public:
 private:
     bool continueRunning;
 
-    Window mainWindow;
-    GraphicsSystem graphics;
-    InputSystem input;
-    Scene gameScene;
+    Window* mainWindow;
+    GraphicsSystem* graphics;
+    InputSystem* input;
+    Scene* gameScene;
 };
 
 #endif //DRAGONENGINE_DRAGONENGINE_H

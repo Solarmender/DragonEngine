@@ -1,12 +1,13 @@
 #include "Window.h"
 #include "../DragonEngine.h"
+#include "../logger/Logger.h"
 #include <stdexcept>
 
 Window::Window(DragonEngine* parentEngine)
 {
     engine = parentEngine;
 
-    hWnd = CreateWindowExW(
+    windowHandle = CreateWindowExW(
             0,
             WindowsApp::getClassName(),
             L"DragonEngine",
@@ -18,18 +19,17 @@ Window::Window(DragonEngine* parentEngine)
             this
     );
 
-    if(hWnd == nullptr)
+    if(windowHandle == nullptr)
     {
-        // TODO: Handle Window Errors
         throw std::runtime_error("Failed to create window");
     }
 
-    ShowWindow(hWnd, SW_SHOW);
+    ShowWindow(windowHandle, SW_SHOW);
 }
 
 Window::~Window()
 {
-    DestroyWindow(hWnd);
+    DestroyWindow(windowHandle);
 }
 
 bool Window::processMessages()
@@ -37,8 +37,9 @@ bool Window::processMessages()
     MSG msg;
     while(PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
     {
-        if( msg.message == WM_QUIT )
+        if(msg.message == WM_QUIT)
         {
+            LOGGER_DEBUG("WM_QUIT Received");
             return true;
         }
 
@@ -51,7 +52,18 @@ bool Window::processMessages()
 
 HWND Window::getWindow()
 {
-    return hWnd;
+    return windowHandle;
+}
+
+RECT Window::getWindowSize()
+{
+    RECT clientRect{ };
+    if(!GetClientRect(engine->getWindow()->getWindow(), &clientRect))
+    {
+        throw std::runtime_error("Failed to get window size");
+    }
+
+    return clientRect;
 }
 
 LRESULT Window::messageSetup(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
@@ -64,6 +76,7 @@ LRESULT Window::messageSetup(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
         SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pWnd));
         SetWindowLongPtr(hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Window::messageForwarder));
 
+        pWnd->windowHandle = hwnd;
         return pWnd->messageHandler(hwnd, msg, wParam, lParam);
     }
 
@@ -79,9 +92,16 @@ LRESULT Window::messageForwarder(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lPar
 
 LRESULT Window::messageHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
-    switch( msg )
+    switch(msg)
     {
+        case WM_SIZE:
+            if(engine->getGraphics())
+            {
+                engine->getGraphics()->onResize();
+            }
+            break;
         case WM_CLOSE:
+            LOGGER_DEBUG("WM_CLOSE Received");
             PostQuitMessage(0);
             return 0;
         case WM_KEYDOWN:
@@ -89,6 +109,11 @@ LRESULT Window::messageHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam
             break;
         case WM_KEYUP:
             engine->getInput()->keyReleased(wParam);
+            break;
+        case WM_GETMINMAXINFO:
+            MINMAXINFO* info = reinterpret_cast<MINMAXINFO*>(lParam);
+            info->ptMinTrackSize.x = 320;
+            info->ptMinTrackSize.y = 200;
             break;
     }
     return DefWindowProcW(hwnd, msg, wParam, lParam);

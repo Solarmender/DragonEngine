@@ -22,6 +22,11 @@ void Logger::init()
     getSingleton();
 }
 
+void Logger::debug(const std::string& message)
+{
+    getSingleton().logMessage(LogLevel::Debug, message);
+}
+
 void Logger::info(const std::string& message)
 {
     getSingleton().logMessage(LogLevel::Info, message);
@@ -64,12 +69,18 @@ void Logger::logMessage(LogLevel level, const std::string& message)
 
     switch(level)
     {
+        case LogLevel::Debug:
+            stream << "[Debug] ";
+            break;
         case LogLevel::Info:
             stream << "[Info] ";
+            break;
         case LogLevel::Warn:
             stream << "[Warn] ";
+            break;
         case LogLevel::Error:
             stream << "[Error] ";
+            break;
     }
 
     stream << message;

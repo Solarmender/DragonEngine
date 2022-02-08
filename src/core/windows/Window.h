@@ -14,11 +14,13 @@ public:
 
     HWND getWindow();
 
+    RECT getWindowSize();
+
     static LRESULT CALLBACK messageSetup(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
     static LRESULT CALLBACK messageForwarder(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
     LRESULT messageHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 private:
-    HWND hWnd;
+    HWND windowHandle;
 
     DragonEngine* engine;
 };

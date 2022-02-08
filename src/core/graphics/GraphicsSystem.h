@@ -13,12 +13,9 @@ public:
 
     void clearScreen();
     void presentFrame();
+
+    void onResize();
 private:
-    DragonEngine* engine;
-
-    unsigned int clientWidth;
-    unsigned int clientHeight;
-
     void initDevice();
     void cleanupDevice();
 
@@ -31,6 +28,8 @@ private:
     ID3D11Device* device;
     ID3D11DeviceContext* deviceContext;
     ID3D11RenderTargetView* backbuffer;
+
+    DragonEngine* engine;
 };
 
 #endif //DRAGONENGINE_GRAPHICSSYSTEM_H
