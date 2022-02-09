@@ -1,7 +1,11 @@
 #ifndef DRAGONENGINE_MINWINDOWS_H
 #define DRAGONENGINE_MINWINDOWS_H
 
+#define UNICODE
+
 #define WIN32_LEAN_AND_MEAN
+
+#define STRICT
 
 #include <Windows.h>
 

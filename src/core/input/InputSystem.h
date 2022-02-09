@@ -10,7 +10,7 @@ public:
     void keyPressed(unsigned char input);
     void keyReleased(unsigned char input);
 private:
-    std::array<bool, 256> keyStates{ };
+    std::array<bool, 256> keyStates{ false };
 };
 
 
