@@ -1,6 +1,7 @@
 #include "DragonEngine.h"
 #include "logger/Logger.h"
-#include "graphics/Cube.h"
+#include "graphics/cube/Cube.h"
+#include "graphics/sphere/Sphere.h"
 #include "entities/Camera.h"
 
 DragonEngine::DragonEngine()
@@ -36,7 +37,18 @@ void DragonEngine::start()
 	gameScene->setCamera(&playerCamera);
 
 	Cube gameCube(this);
+    Cube gameCube2(this);
+    gameCube2.getTransform().moveAbsolute(5, 0, 0);
+    Cube gameCube3(this);
+    gameCube3.getTransform().moveAbsolute(0, -5, 0);
+
+    Sphere gameSphere(this);
+    gameSphere.getTransform().moveAbsolute(0, 0, 5);
+
 	gameScene->addEntity(&gameCube);
+    gameScene->addEntity(&gameCube2);
+    gameScene->addEntity(&gameCube3);
+    gameScene->addEntity(&gameSphere);
 
     while(continueRunning)
     {

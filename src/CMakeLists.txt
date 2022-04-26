@@ -17,8 +17,8 @@ add_executable(DragonEngine WIN32
         core/entities/Entity.h
         core/entities/Scene.cpp
         core/entities/Scene.h
-        core/graphics/Cube.cpp
-        core/graphics/Cube.h
+        core/graphics/cube/Cube.cpp
+        core/graphics/cube/Cube.h
         core/graphics/VertexShader.cpp
         core/graphics/VertexShader.h
         core/graphics/PixelShader.cpp
@@ -34,7 +34,13 @@ add_executable(DragonEngine WIN32
         core/graphics/ConstantBuffer.cpp
         core/graphics/ConstantBuffer.h
         core/graphics/Topology.cpp
-        core/graphics/Topology.h core/entities/Transform.cpp core/entities/Transform.h)
+        core/graphics/Topology.h
+        core/entities/Transform.cpp
+        core/entities/Transform.h
+        core/graphics/sphere/Sphere.cpp
+        core/graphics/sphere/Sphere.h
+        core/entities/Mesh.cpp
+        core/entities/Mesh.h)
 
 set_property(TARGET DragonEngine PROPERTY CXX_STANDARD 20)
 set_property(TARGET DragonEngine PROPERTY CXX_STANDARD_REQUIRED ON)

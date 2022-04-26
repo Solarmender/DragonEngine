@@ -1,33 +1,21 @@
 #include "VertexBuffer.h"
 #include <stdexcept>
 
-VertexBuffer::VertexBuffer(GraphicsSystem* gfx)
+VertexBuffer::VertexBuffer(Mesh* mesh, GraphicsSystem* gfx)
 {
 	graphics = gfx;
-
-	// Pass this in from constructor
-	float vertex_data_array[] = {
-		-1.0f, 1.0f, -1.0f,
-		1.0f, 1.0f, -1.0f,
-		1.0f, 1.0f, 1.0f,
-		-1.0f, 1.0f, 1.0f,
-		-1.0f, -1.0f, -1.0f,
-		1.0f, -1.0f, -1.0f,
-		1.0f, -1.0f, 1.0f,
-		-1.0f, -1.0f, 1.0f,
-	};
 
 	vertexStride = 3 * sizeof(float);
 	vertexOffset = 0;
 
 	D3D11_BUFFER_DESC vertexBuffDesc = { };
-	vertexBuffDesc.ByteWidth = sizeof(vertex_data_array);
+	vertexBuffDesc.ByteWidth = uint64_t(mesh->vertices.size()) * uint64_t(vertexStride);
 	vertexBuffDesc.Usage = D3D11_USAGE_DEFAULT;
 	vertexBuffDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBuffDesc.CPUAccessFlags = 0;
 
 	D3D11_SUBRESOURCE_DATA sr_data = { };
-	sr_data.pSysMem = vertex_data_array;
+	sr_data.pSysMem = mesh->vertices.data();
 
 	HRESULT hr = graphics->getDevice()->CreateBuffer(
 		&vertexBuffDesc,

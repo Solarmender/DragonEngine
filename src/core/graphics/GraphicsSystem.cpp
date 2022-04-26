@@ -22,7 +22,7 @@ GraphicsSystem::~GraphicsSystem()
 
 void GraphicsSystem::clearScreen()
 {
-    const float color[] = { 0.0f, 0.2f, 0.4f, 1.0f};
+    const float color[] = { 0.0f, 0.0f, 0.0f, 1.0f };
     deviceContext->ClearRenderTargetView(renderTarget, color);
 
 	deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.0f, 0);

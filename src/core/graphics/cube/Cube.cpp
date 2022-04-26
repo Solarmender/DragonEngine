@@ -1,14 +1,15 @@
 #include "Cube.h"
-#include "../DragonEngine.h"
-#include <stdexcept>
+#include "../../DragonEngine.h"
 
 Cube::Cube(DragonEngine* parent) : Entity(parent)
 {
-	vertexShader = new VertexShader(L"cubeshader.hlsl", parent->getGraphics());
-	pixelShader = new PixelShader(L"cubeshader.hlsl", parent->getGraphics());
+    cubeMesh = createCube();
+
+	vertexShader = new VertexShader(L"simple.hlsl", parent->getGraphics());
+	pixelShader = new PixelShader(L"simple.hlsl", parent->getGraphics());
 	inputLayout = new InputLayout(vertexShader, parent->getGraphics());
-	vertexBuffer = new VertexBuffer(parent->getGraphics());
-	indexBuffer = new IndexBuffer(parent->getGraphics());
+	vertexBuffer = new VertexBuffer(cubeMesh, parent->getGraphics());
+	indexBuffer = new IndexBuffer(cubeMesh, parent->getGraphics());
 	constantBuffer = new ConstantBuffer(parent->getGraphics());
 	topology = new Topology(parent->getGraphics());
 }

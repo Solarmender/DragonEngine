@@ -15,6 +15,7 @@ public:
 
     virtual void render();
 
+    Transform& getTransform();
 protected:
 	Transform transform;
 

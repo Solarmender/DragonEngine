@@ -3,11 +3,12 @@
 
 #include "GraphicsSystem.h"
 #include "d3d11.h"
+#include "../entities/Mesh.h"
 
 class IndexBuffer
 {
 public:
-	explicit IndexBuffer(GraphicsSystem* gfx);
+    IndexBuffer(Mesh* mesh, GraphicsSystem* gfx);
 
 	void set();
 

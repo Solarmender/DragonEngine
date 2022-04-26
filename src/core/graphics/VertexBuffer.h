@@ -3,11 +3,12 @@
 
 #include "GraphicsSystem.h"
 #include "d3d11.h"
+#include "../entities/Mesh.h"
 
 class VertexBuffer
 {
 public:
-	explicit VertexBuffer(GraphicsSystem* gfx);
+    VertexBuffer(Mesh* mesh, GraphicsSystem* gfx);
 
 	void set();
 private:

@@ -1,41 +1,20 @@
 #include "IndexBuffer.h"
 #include <stdexcept>
 
-IndexBuffer::IndexBuffer(GraphicsSystem* gfx)
+IndexBuffer::IndexBuffer(Mesh* mesh, GraphicsSystem* gfx)
 {
 	graphics = gfx;
 
-	WORD indices[] =
-		{
-			3,1,0,
-			2,1,3,
-
-			0,5,4,
-			1,5,0,
-
-			3,4,7,
-			0,4,3,
-
-			1,6,5,
-			2,6,1,
-
-			2,7,6,
-			3,7,2,
-
-			6,4,5,
-			7,4,6,
-		};
-
-	indexCount = 36;
+	indexCount = mesh->indices.size();
 
 	D3D11_BUFFER_DESC indexBuffDesc = { };
 	indexBuffDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBuffDesc.ByteWidth = sizeof(indices);
+	indexBuffDesc.ByteWidth = uint64_t(mesh->indices.size()) * uint64_t(sizeof(unsigned short));
 	indexBuffDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	indexBuffDesc.CPUAccessFlags = 0;
 
 	D3D11_SUBRESOURCE_DATA InitData = { };
-	InitData.pSysMem = indices;
+	InitData.pSysMem = mesh->indices.data();
 
 	HRESULT hr = graphics->getDevice()->CreateBuffer(
 		&indexBuffDesc,

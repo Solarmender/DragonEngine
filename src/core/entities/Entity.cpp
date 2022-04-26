@@ -16,3 +16,8 @@ void Entity::render()
 {
 
 }
+
+Transform& Entity::getTransform()
+{
+    return transform;
+}
