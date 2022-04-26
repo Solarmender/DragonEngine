@@ -5,52 +5,72 @@
 
 Camera::Camera(DragonEngine* parent) : Entity(parent)
 {
-	position = DirectX::XMFLOAT3(0, 0, -10);
-	rotation = DirectX::XMFLOAT3(0, 0, 0);
+	transform.position = DirectX::XMFLOAT3(0, 3, -10);
+    transform.rotation = DirectX::XMFLOAT3(0.5, 0, 0);
 }
 
 void Camera::update()
 {
+    float deltaTime = engine->getScene()->deltaTime;
 
-	DirectX::XMFLOAT3 translation = DirectX::XMFLOAT3();
+    if(engine->getInput()->isPressed('W'))
+    {
+        transform.moveAbsolute(0, 0, 50 * deltaTime);
+    }
+    if(engine->getInput()->isPressed('A'))
+    {
+        transform.moveAbsolute(-50 * deltaTime, 0, 0);
+    }
+    if(engine->getInput()->isPressed('S'))
+    {
+        transform.moveAbsolute(0, 0, -50 * deltaTime);
+    }
+    if(engine->getInput()->isPressed('D'))
+    {
+        transform.moveAbsolute(+50 * deltaTime, 0, 0);
+    }
+    if(engine->getInput()->isPressed('Q'))
+    {
+        transform.moveAbsolute(0, 50 * deltaTime, 0);
+    }
+    if(engine->getInput()->isPressed('Z'))
+    {
+        transform.moveAbsolute(0, -50 * deltaTime, 0);
+    }
 
-	float deltaTime = engine->getScene()->deltaTime;
-
-	if(engine->getInput()->isPressed('W'))
-	{
-		translation.z = translation.z + deltaTime;
-	}
-	if(engine->getInput()->isPressed('A'))
-	{
-		translation.x = translation.x - deltaTime;
-	}
-	if(engine->getInput()->isPressed('S'))
-	{
-		translation.z = translation.z - deltaTime;
-	}
-	if(engine->getInput()->isPressed('D'))
-	{
-		translation.x = translation.x + deltaTime;
-	}
-	if(engine->getInput()->isPressed('Q'))
-	{
-		rotation.z = rotation.z + deltaTime * 2;
-	}
-	if(engine->getInput()->isPressed('E'))
-	{
-		rotation.z = rotation.z - deltaTime * 2;
-	}
-
-	DirectX::XMStoreFloat3(&translation, DirectX::XMVector3Transform(DirectX::XMLoadFloat3(&translation), DirectX::XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z) * DirectX::XMMatrixScaling(5, 5, 5)));
-	position = { position.x + translation.x, position.y + translation.y, position.z + translation.z };
+    if(engine->getInput()->isPressed('I'))
+    {
+        transform.rotation.x -= 15 * deltaTime;
+    }
+    if(engine->getInput()->isPressed('J'))
+    {
+        transform.rotation.y -= 15 * deltaTime;
+    }
+    if(engine->getInput()->isPressed('K'))
+    {
+        transform.rotation.x += 15 * deltaTime;
+    }
+    if(engine->getInput()->isPressed('L'))
+    {
+        transform.rotation.y += 15 * deltaTime;
+    }
+    if(engine->getInput()->isPressed('U'))
+    {
+        transform.rotation.z += 15 * deltaTime;
+    }
+    if(engine->getInput()->isPressed('O'))
+    {
+        transform.rotation.z -= 15 * deltaTime;
+    }
 }
 
 DirectX::XMMATRIX Camera::getViewMatrix()
 {
-	DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
-	DirectX::XMVECTOR eyePosition = DirectX::XMVectorSet( position.x, position.y, position.z, 1 );
+	DirectX::XMMATRIX rotationMatrix = DirectX::XMMatrixRotationRollPitchYaw(transform.rotation.x, transform.rotation.y, transform.rotation.z);
+	DirectX::XMVECTOR eyePosition = DirectX::XMVectorSet( transform.position.x, transform.position.y, transform.position.z, 1);
 	DirectX::XMVECTOR lookVector = XMVector3Transform(DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), rotationMatrix);
-	return DirectX::XMMatrixLookAtLH( eyePosition, DirectX::XMVectorAdd(lookVector, eyePosition), XMVector3TransformCoord(DirectX::XMVectorSet(0, 1, 0, 0), rotationMatrix));
+    DirectX::XMVECTOR upDirection = XMVector3TransformCoord(DirectX::XMVectorSet(0, 1, 0, 0), rotationMatrix);
+	return DirectX::XMMatrixLookAtLH( eyePosition, DirectX::XMVectorAdd(lookVector, eyePosition), upDirection);
 }
 
 DirectX::XMMATRIX Camera::getProjectionMatrix()

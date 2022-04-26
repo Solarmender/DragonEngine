@@ -1,6 +1,7 @@
 #ifndef DRAGONENGINE_ENTITY_H
 #define DRAGONENGINE_ENTITY_H
 
+#include "Transform.h"
 #include <DirectXMath.h>
 
 class DragonEngine;
@@ -14,13 +15,8 @@ public:
 
     virtual void render();
 
-	DirectX::XMFLOAT3 getPosition();
-	DirectX::XMFLOAT3 getRotation();
-	DirectX::XMMATRIX getTranslationMatrix();
 protected:
-	DirectX::XMFLOAT3 position;
-	DirectX::XMFLOAT3 rotation;
-	DirectX::XMFLOAT3 scale;
+	Transform transform;
 
 	DragonEngine* engine;
 private:

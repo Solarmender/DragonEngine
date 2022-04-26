@@ -17,7 +17,7 @@ vs_out vs_main(vs_in input) {
   vs_out output = (vs_out)0;
 
   matrix mvp = mul(projectionMatrix, mul(viewMatrix, modelMatrix));
-  output.position_clip = mul(float4(input.position_local, 1.0f), mvp);
+  output.position_clip = mul(mvp, float4(input.position_local, 1.0f));
   return output;
 }
 

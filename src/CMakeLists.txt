@@ -34,7 +34,7 @@ add_executable(DragonEngine WIN32
         core/graphics/ConstantBuffer.cpp
         core/graphics/ConstantBuffer.h
         core/graphics/Topology.cpp
-        core/graphics/Topology.h)
+        core/graphics/Topology.h core/entities/Transform.cpp core/entities/Transform.h)
 
 set_property(TARGET DragonEngine PROPERTY CXX_STANDARD 20)
 set_property(TARGET DragonEngine PROPERTY CXX_STANDARD_REQUIRED ON)

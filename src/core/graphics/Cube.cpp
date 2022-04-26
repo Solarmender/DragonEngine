@@ -31,7 +31,7 @@ void Cube::render()
 
 	vertexShader->set();
 
-	DirectX::XMMATRIX worldMatrix = getTranslationMatrix();
+	DirectX::XMMATRIX worldMatrix = transform.getTranslationMatrix();
 	DirectX::XMMATRIX viewMatrix = engine->getScene()->getCamera()->getViewMatrix();
 	DirectX::XMMATRIX projectionMatrix = engine->getScene()->getCamera()->getProjectionMatrix();
 
