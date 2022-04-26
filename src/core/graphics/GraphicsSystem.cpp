@@ -7,48 +7,71 @@ GraphicsSystem::GraphicsSystem(DragonEngine* parentEngine)
 {
     engine = parentEngine;
 
-    swapchain = nullptr;
-    device = nullptr;
-    deviceContext = nullptr;
-    backbuffer = nullptr;
-
     initDevice();
-    initBackbuffer();
+	initRenderTarget();
+	initDepthStencil();
     setViewport();
 }
 
 GraphicsSystem::~GraphicsSystem()
 {
-    cleanupBackbuffer();
+	cleanupDepthStencil();
+	cleanupRenderTarget();
     cleanupDevice();
 }
 
 void GraphicsSystem::clearScreen()
 {
     const float color[] = { 0.0f, 0.2f, 0.4f, 1.0f};
-    deviceContext->ClearRenderTargetView(backbuffer, color);
+    deviceContext->ClearRenderTargetView(renderTarget, color);
+
+	deviceContext->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+	deviceContext->OMSetRenderTargets(1, &renderTarget, depthStencil);
 }
 
 void GraphicsSystem::presentFrame()
 {
-    swapchain->Present(0, 0);
+    HRESULT hr = swapchain->Present(0, 0);
+	if(FAILED(hr))
+	{
+		throw std::runtime_error("Failed to present frame");
+	}
+
 }
 
 void GraphicsSystem::onResize()
 {
-    if(swapchain)
-    {
-        cleanupBackbuffer();
+	if(swapchain)
+	{
+		deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
-        HRESULT hr = swapchain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
-        if(FAILED(hr))
-        {
-            throw std::runtime_error("Failed to resize swapchain");
-        }
+		cleanupDepthStencil();
+		cleanupRenderTarget();
 
-        initBackbuffer();
-        setViewport();
-    }
+		HRESULT hr = swapchain->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, 0);
+		if(FAILED(hr))
+		{
+			throw std::runtime_error("Failed to resize swapchain");
+		}
+
+		initRenderTarget();
+		initDepthStencil();
+
+		deviceContext->OMSetRenderTargets(1, &renderTarget, depthStencil);
+
+		setViewport();
+	}
+}
+
+ID3D11Device* GraphicsSystem::getDevice()
+{
+	return device;
+}
+
+ID3D11DeviceContext* GraphicsSystem::getDeviceContext()
+{
+	return deviceContext;
 }
 
 void GraphicsSystem::initDevice()
@@ -86,41 +109,90 @@ void GraphicsSystem::cleanupDevice()
     swapchain->Release();
     deviceContext->Release();
     device->Release();
-
-    swapchain = nullptr;
-    deviceContext = nullptr;
-    device = nullptr;
 }
 
-void GraphicsSystem::initBackbuffer()
+void GraphicsSystem::initRenderTarget()
 {
-    ID3D11Texture2D* tempBackbuffer = nullptr;
+	ID3D11Texture2D* backBuffer;
 
-    HRESULT hr = swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&tempBackbuffer);
-    if(FAILED(hr))
-    {
-        throw std::runtime_error("Failed to create buffer");
-    }
+	HRESULT hr = swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer);
+	if(FAILED(hr))
+	{
+		throw std::runtime_error("Failed to get swapchain backbuffer");
+	}
 
-    hr = device->CreateRenderTargetView(tempBackbuffer, nullptr, &backbuffer);
+    hr = device->CreateRenderTargetView(backBuffer, nullptr, &renderTarget);
     if(FAILED(hr))
     {
         throw std::runtime_error("Failed to create backbuffer");
     }
 
-    tempBackbuffer->Release();
-
-    deviceContext->OMSetRenderTargets(1, &backbuffer, nullptr);
+	backBuffer->Release();
 }
 
-void GraphicsSystem::cleanupBackbuffer()
+void GraphicsSystem::cleanupRenderTarget()
 {
-    deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+	deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
-    backbuffer->Release();
-    backbuffer = nullptr;
+	renderTarget->Release();
 
-    deviceContext->Flush();
+	deviceContext->Flush();
+}
+
+void GraphicsSystem::initDepthStencil()
+{
+	RECT rect;
+	GetWindowRect( engine->getWindow()->getWindow(), &rect);
+	int windowWidth = rect.right - rect.left;
+	int windowHeight = rect.bottom - rect.top;
+
+	D3D11_TEXTURE2D_DESC depthStencilDesc{ };
+	depthStencilDesc.ArraySize = 1;
+	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depthStencilDesc.CPUAccessFlags = 0;
+	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthStencilDesc.Width = windowWidth;
+	depthStencilDesc.Height = windowHeight;
+	depthStencilDesc.MipLevels = 1;
+	depthStencilDesc.SampleDesc.Count = 1;
+	depthStencilDesc.SampleDesc.Quality = 0;
+	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
+
+	ID3D11Texture2D* tempDepthBuffer;
+	device->CreateTexture2D(&depthStencilDesc, nullptr, &tempDepthBuffer);
+
+	device->CreateDepthStencilView(tempDepthBuffer, nullptr, &depthStencil);
+
+	tempDepthBuffer->Release();
+
+	ID3D11DepthStencilState* depthStencilState;
+
+	D3D11_DEPTH_STENCIL_DESC depthStencilStateDesc{ };
+	depthStencilStateDesc.DepthEnable = TRUE;
+	depthStencilStateDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilStateDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+	device->CreateDepthStencilState(&depthStencilStateDesc, &depthStencilState);
+	deviceContext->OMSetDepthStencilState(depthStencilState, 0);
+
+	ID3D11RasterizerState* rasterizerState;
+
+	D3D11_RASTERIZER_DESC rasterizerStateDesc{ };
+	rasterizerStateDesc.FillMode = D3D11_FILL_SOLID;
+	rasterizerStateDesc.CullMode = D3D11_CULL_BACK;
+	rasterizerStateDesc.FrontCounterClockwise = TRUE;
+
+	device->CreateRasterizerState(&rasterizerStateDesc, &rasterizerState);
+	deviceContext->RSSetState(rasterizerState);
+}
+
+void GraphicsSystem::cleanupDepthStencil()
+{
+	deviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+
+	depthStencil->Release();
+
+	deviceContext->Flush();
 }
 
 void GraphicsSystem::setViewport()

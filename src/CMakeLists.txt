@@ -16,10 +16,28 @@ add_executable(DragonEngine WIN32
         core/entities/Entity.cpp
         core/entities/Entity.h
         core/entities/Scene.cpp
-        core/entities/Scene.h)
+        core/entities/Scene.h
+        core/graphics/Cube.cpp
+        core/graphics/Cube.h
+        core/graphics/VertexShader.cpp
+        core/graphics/VertexShader.h
+        core/graphics/PixelShader.cpp
+        core/graphics/PixelShader.h
+        core/graphics/InputLayout.cpp
+        core/graphics/InputLayout.h
+        core/graphics/VertexBuffer.cpp
+        core/graphics/VertexBuffer.h
+        core/graphics/IndexBuffer.cpp
+        core/graphics/IndexBuffer.h
+        core/entities/Camera.cpp
+        core/entities/Camera.h
+        core/graphics/ConstantBuffer.cpp
+        core/graphics/ConstantBuffer.h
+        core/graphics/Topology.cpp
+        core/graphics/Topology.h)
 
 set_property(TARGET DragonEngine PROPERTY CXX_STANDARD 20)
 set_property(TARGET DragonEngine PROPERTY CXX_STANDARD_REQUIRED ON)
 set_property(TARGET DragonEngine PROPERTY CXX_EXTENSIONS OFF)
 
-target_link_libraries(DragonEngine PRIVATE d3d11)
+target_link_libraries(DragonEngine PRIVATE d3d11 d3dcompiler)

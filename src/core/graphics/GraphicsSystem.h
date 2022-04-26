@@ -15,19 +15,26 @@ public:
     void presentFrame();
 
     void onResize();
+
+	ID3D11Device* getDevice();
+	ID3D11DeviceContext* getDeviceContext();
 private:
     void initDevice();
     void cleanupDevice();
 
-    void initBackbuffer();
-    void cleanupBackbuffer();
+    void initRenderTarget();
+    void cleanupRenderTarget();
+
+	void initDepthStencil();
+	void cleanupDepthStencil();
 
     void setViewport();
 
     IDXGISwapChain* swapchain;
     ID3D11Device* device;
     ID3D11DeviceContext* deviceContext;
-    ID3D11RenderTargetView* backbuffer;
+    ID3D11RenderTargetView* renderTarget;
+	ID3D11DepthStencilView* depthStencil;
 
     DragonEngine* engine;
 };

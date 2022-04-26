@@ -1,5 +1,7 @@
 #include "DragonEngine.h"
 #include "logger/Logger.h"
+#include "graphics/Cube.h"
+#include "entities/Camera.h"
 
 DragonEngine::DragonEngine()
 {
@@ -29,6 +31,12 @@ DragonEngine::~DragonEngine()
 void DragonEngine::start()
 {
     // Setup game
+	Camera playerCamera(this);
+	gameScene->addEntity(&playerCamera);
+	gameScene->setCamera(&playerCamera);
+
+	Cube gameCube(this);
+	gameScene->addEntity(&gameCube);
 
     while(continueRunning)
     {
@@ -61,4 +69,9 @@ GraphicsSystem* DragonEngine::getGraphics()
 InputSystem* DragonEngine::getInput()
 {
     return input;
+}
+
+Scene* DragonEngine::getScene()
+{
+	return gameScene;
 }

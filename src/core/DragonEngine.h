@@ -16,6 +16,7 @@ public:
     Window* getWindow();
     GraphicsSystem* getGraphics();
     InputSystem* getInput();
+	Scene* getScene();
 private:
     bool continueRunning;
 
