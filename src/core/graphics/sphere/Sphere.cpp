@@ -38,7 +38,7 @@ void Sphere::render()
 
 	if(shouldOrbit)
 	{
-		orbitAngle += 1 * engine->getScene()->deltaTime;
+		orbitAngle += orbitSpeed * engine->getScene()->deltaTime;
 		if (orbitAngle > 360.f)
 		{
 			orbitAngle -= 360.f;
@@ -46,7 +46,7 @@ void Sphere::render()
 
 		DirectX::XMVECTOR rotaxis = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 		DirectX::XMMATRIX Rotation = DirectX::XMMatrixRotationAxis( rotaxis, orbitAngle);
-		DirectX::XMMATRIX Translation = DirectX::XMMatrixTranslation( 50.0f, 0.0f, 0.0f );
+		DirectX::XMMATRIX Translation = DirectX::XMMatrixTranslation( radius, 0.0f, 0.0f );
 
 		worldMatrix = worldMatrix * Translation * Rotation;
 	}
@@ -58,7 +58,9 @@ void Sphere::render()
 	gfx->getDeviceContext()->DrawIndexed(indexBuffer->getIndexCount(), 0, 0);
 }
 
-void Sphere::orbit(float x, float y, float z)
+void Sphere::orbit(float x, float y, float z, float r, float a)
 {
+	orbitSpeed = a;
+	radius = r;
 	shouldOrbit = true;
 }

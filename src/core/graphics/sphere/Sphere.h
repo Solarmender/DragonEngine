@@ -19,7 +19,7 @@ public:
     void update() override;
     void render() override;
 
-	void orbit(float x, float y, float z);
+	void orbit(float x, float y, float z, float r, float a);
 private:
     Mesh* sphereMesh;
     VertexShader* vertexShader;
@@ -30,6 +30,8 @@ private:
     ConstantBuffer* constantBuffer;
     Topology* topology;
 
+	float radius = 2;
+	float orbitSpeed = 1;
 	bool shouldOrbit = false;
 	float orbitAngle = 0;
 };
