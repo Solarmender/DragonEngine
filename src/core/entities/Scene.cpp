@@ -38,6 +38,8 @@ void Scene::update()
 
 	deltaTime = seconds.count() / 1000.0f;
 
+	previousTime = currentTime;
+
 	if(currentCamera == nullptr)
 	{
 		throw std::runtime_error("There is no camera");
@@ -47,8 +49,6 @@ void Scene::update()
     {
         entity->update();
     }
-
-	previousTime = currentTime;
 }
 
 Camera* Scene::getCamera()

@@ -3,11 +3,14 @@
 
 #include <vector>
 
+using vertexVector = std::vector<float>;
+using IndexVector = std::vector<uint16_t>;
+
 class Mesh
 {
 public:
-    std::vector<float> vertices;
-    std::vector<unsigned short> indices;
+	vertexVector vertices;
+	IndexVector indices;
 private:
 };
 

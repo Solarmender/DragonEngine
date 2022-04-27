@@ -21,21 +21,24 @@ void Transform::moveAbsolute(float x, float y, float z)
     position.z += z;
 }
 
-/*
- * DirectX::XMFLOAT3 Entity::getPosition()
+void Transform::setPosition(float x, float y, float z)
 {
-	return position;
+    position.x = x;
+    position.y = y;
+    position.z = z;
 }
 
-DirectX::XMFLOAT3 Entity::getRotation()
+void Transform::setRotation(float x, float y, float z)
 {
-	return rotation;
+    rotation.x = x;
+    rotation.y = y;
+    rotation.z = z;
 }
 
-DirectX::XMMATRIX Entity::getTranslationMatrix()
+void Transform::setScale(float x, float y, float z)
 {
-	return DirectX::XMMatrixTranslation(position.x, position.y, position.z) *
-			DirectX::XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z) *
-			DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
+    scale.x = x;
+    scale.y = y;
+    scale.z = z;
 }
- */
+

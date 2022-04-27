@@ -18,6 +18,8 @@ public:
 
     void update() override;
     void render() override;
+
+	void orbit(float x, float y, float z);
 private:
     Mesh* sphereMesh;
     VertexShader* vertexShader;
@@ -27,6 +29,9 @@ private:
     IndexBuffer* indexBuffer;
     ConstantBuffer* constantBuffer;
     Topology* topology;
+
+	bool shouldOrbit = false;
+	float orbitAngle = 0;
 };
 
 #endif //DRAGONENGINE_SPHERE_H

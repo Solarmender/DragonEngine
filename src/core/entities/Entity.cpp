@@ -21,3 +21,8 @@ Transform& Entity::getTransform()
 {
     return transform;
 }
+
+DragonEngine* Entity::getEngine()
+{
+	return engine;
+}

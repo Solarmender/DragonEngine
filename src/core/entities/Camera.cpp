@@ -5,8 +5,6 @@
 
 Camera::Camera(DragonEngine* parent) : Entity(parent)
 {
-	transform.position = DirectX::XMFLOAT3(0, 3, -10);
-    transform.rotation = DirectX::XMFLOAT3(0.5, 0, 0);
 }
 
 void Camera::update()
@@ -15,52 +13,52 @@ void Camera::update()
 
     if(engine->getInput()->isPressed('W'))
     {
-        transform.moveAbsolute(0, 0, 50 * deltaTime);
+        transform.moveAbsolute(0, 0, 15 * deltaTime);
     }
     if(engine->getInput()->isPressed('A'))
     {
-        transform.moveAbsolute(-50 * deltaTime, 0, 0);
+        transform.moveAbsolute(-15 * deltaTime, 0, 0);
     }
     if(engine->getInput()->isPressed('S'))
     {
-        transform.moveAbsolute(0, 0, -50 * deltaTime);
+        transform.moveAbsolute(0, 0, -15 * deltaTime);
     }
     if(engine->getInput()->isPressed('D'))
     {
-        transform.moveAbsolute(+50 * deltaTime, 0, 0);
+        transform.moveAbsolute(+15 * deltaTime, 0, 0);
     }
     if(engine->getInput()->isPressed('Q'))
     {
-        transform.moveAbsolute(0, 50 * deltaTime, 0);
+        transform.moveAbsolute(0, 15 * deltaTime, 0);
     }
     if(engine->getInput()->isPressed('Z'))
     {
-        transform.moveAbsolute(0, -50 * deltaTime, 0);
+        transform.moveAbsolute(0, -15 * deltaTime, 0);
     }
 
     if(engine->getInput()->isPressed('I'))
     {
-        transform.rotation.x -= 15 * deltaTime;
+        transform.rotation.x -= 1 * deltaTime;
     }
     if(engine->getInput()->isPressed('J'))
     {
-        transform.rotation.y -= 15 * deltaTime;
+        transform.rotation.y -= 1 * deltaTime;
     }
     if(engine->getInput()->isPressed('K'))
     {
-        transform.rotation.x += 15 * deltaTime;
+        transform.rotation.x += 1 * deltaTime;
     }
     if(engine->getInput()->isPressed('L'))
     {
-        transform.rotation.y += 15 * deltaTime;
+        transform.rotation.y += 1 * deltaTime;
     }
     if(engine->getInput()->isPressed('U'))
     {
-        transform.rotation.z += 15 * deltaTime;
+        transform.rotation.z += 1 * deltaTime;
     }
     if(engine->getInput()->isPressed('O'))
     {
-        transform.rotation.z -= 15 * deltaTime;
+        transform.rotation.z -= 1 * deltaTime;
     }
 }
 

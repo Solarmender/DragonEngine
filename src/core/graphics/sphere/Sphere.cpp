@@ -3,7 +3,7 @@
 
 Sphere::Sphere(DragonEngine* parent) : Entity(parent)
 {
-    sphereMesh = createCube();
+    sphereMesh = createSphere();
 
     vertexShader = new VertexShader(L"simple.hlsl", parent->getGraphics());
     pixelShader = new PixelShader(L"simple.hlsl", parent->getGraphics());
@@ -16,30 +16,49 @@ Sphere::Sphere(DragonEngine* parent) : Entity(parent)
 
 void Sphere::update()
 {
-    GraphicsSystem* gfx = engine->getGraphics();
-
-    vertexBuffer->set();
-
-    inputLayout->set();
-
-    indexBuffer->set();
-
-    topology->set();
-
-    vertexShader->set();
-
-    DirectX::XMMATRIX worldMatrix = transform.getTranslationMatrix();
-    DirectX::XMMATRIX viewMatrix = engine->getScene()->getCamera()->getViewMatrix();
-    DirectX::XMMATRIX projectionMatrix = engine->getScene()->getCamera()->getProjectionMatrix();
-
-    constantBuffer->update(worldMatrix, viewMatrix, projectionMatrix);
-
-    pixelShader->set();
-
-    gfx->getDeviceContext()->DrawIndexed(indexBuffer->getIndexCount(), 0, 0);
 }
 
 void Sphere::render()
 {
+	GraphicsSystem* gfx = engine->getGraphics();
 
+	vertexBuffer->set();
+
+	inputLayout->set();
+
+	indexBuffer->set();
+
+	topology->set();
+
+	vertexShader->set();
+
+	DirectX::XMMATRIX worldMatrix = transform.getTranslationMatrix();
+	DirectX::XMMATRIX viewMatrix = engine->getScene()->getCamera()->getViewMatrix();
+	DirectX::XMMATRIX projectionMatrix = engine->getScene()->getCamera()->getProjectionMatrix();
+
+	if(shouldOrbit)
+	{
+		orbitAngle += 1 * engine->getScene()->deltaTime;
+		if (orbitAngle > 360.f)
+		{
+			orbitAngle -= 360.f;
+		}
+
+		DirectX::XMVECTOR rotaxis = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+		DirectX::XMMATRIX Rotation = DirectX::XMMatrixRotationAxis( rotaxis, orbitAngle);
+		DirectX::XMMATRIX Translation = DirectX::XMMatrixTranslation( 50.0f, 0.0f, 0.0f );
+
+		worldMatrix = worldMatrix * Translation * Rotation;
+	}
+
+	constantBuffer->update(worldMatrix, viewMatrix, projectionMatrix);
+
+	pixelShader->set();
+
+	gfx->getDeviceContext()->DrawIndexed(indexBuffer->getIndexCount(), 0, 0);
+}
+
+void Sphere::orbit(float x, float y, float z)
+{
+	shouldOrbit = true;
 }

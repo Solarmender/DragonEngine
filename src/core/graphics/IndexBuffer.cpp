@@ -7,13 +7,13 @@ IndexBuffer::IndexBuffer(Mesh* mesh, GraphicsSystem* gfx)
 
 	indexCount = mesh->indices.size();
 
-	D3D11_BUFFER_DESC indexBuffDesc = { };
+	D3D11_BUFFER_DESC indexBuffDesc{ };
 	indexBuffDesc.Usage = D3D11_USAGE_DEFAULT;
 	indexBuffDesc.ByteWidth = uint64_t(mesh->indices.size()) * uint64_t(sizeof(unsigned short));
 	indexBuffDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	indexBuffDesc.CPUAccessFlags = 0;
 
-	D3D11_SUBRESOURCE_DATA InitData = { };
+	D3D11_SUBRESOURCE_DATA InitData{ };
 	InitData.pSysMem = mesh->indices.data();
 
 	HRESULT hr = graphics->getDevice()->CreateBuffer(

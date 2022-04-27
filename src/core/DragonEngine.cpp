@@ -33,22 +33,19 @@ void DragonEngine::start()
 {
     // Setup game
 	Camera playerCamera(this);
+	playerCamera.getTransform().setPosition(0, 0, -100);
 	gameScene->addEntity(&playerCamera);
 	gameScene->setCamera(&playerCamera);
 
-	Cube gameCube(this);
-    Cube gameCube2(this);
-    gameCube2.getTransform().moveAbsolute(5, 0, 0);
-    Cube gameCube3(this);
-    gameCube3.getTransform().moveAbsolute(0, -5, 0);
+    Sphere sun(this);
+	sun.getTransform().setScale(3, 3, 3);
+    gameScene->addEntity(&sun);
 
-    Sphere gameSphere(this);
-    gameSphere.getTransform().moveAbsolute(0, 0, 5);
-
-	gameScene->addEntity(&gameCube);
-    gameScene->addEntity(&gameCube2);
-    gameScene->addEntity(&gameCube3);
-    gameScene->addEntity(&gameSphere);
+	Sphere planet(this);
+	planet.getTransform().setPosition(0, 0, -15);
+	planet.getTransform().setScale(1, 1, 1);
+	planet.orbit(0, 0, 0);
+	gameScene->addEntity(&planet);
 
     while(continueRunning)
     {

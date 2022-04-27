@@ -40,7 +40,8 @@ add_executable(DragonEngine WIN32
         core/graphics/sphere/Sphere.cpp
         core/graphics/sphere/Sphere.h
         core/entities/Mesh.cpp
-        core/entities/Mesh.h)
+        core/entities/Mesh.h
+        )
 
 set_property(TARGET DragonEngine PROPERTY CXX_STANDARD 20)
 set_property(TARGET DragonEngine PROPERTY CXX_STANDARD_REQUIRED ON)

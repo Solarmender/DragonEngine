@@ -1,4 +1,18 @@
 #include "Mesh.h"
+#include "DirectXMath.h"
+
+
+inline void CheckIndexOverflow(size_t value)
+{
+	if (value >= USHRT_MAX)
+		abort();
+}
+
+inline void index_push_back(IndexVector& indices, size_t value)
+{
+	CheckIndexOverflow(value);
+	indices.push_back(static_cast<uint16_t>(value));
+}
 
 Mesh* createCube()
 {
@@ -49,9 +63,68 @@ Mesh* createCube()
     return cube;
 }
 
-static Mesh* createSphere()
+Mesh* createSphere()
 {
     Mesh* sphere = new Mesh();
+
+	float diameter = 3;
+	size_t tessellation = 16;
+
+	if (tessellation < 3)
+	{
+		abort();
+	}
+
+	const size_t verticalSegments = tessellation;
+	const size_t horizontalSegments = tessellation * 2;
+
+	const float radius = diameter / 2;
+
+	for (size_t i = 0; i <= verticalSegments; i++)
+	{
+		const float latitude = (float(i) * DirectX::XM_PI / float(verticalSegments)) - DirectX::XM_PIDIV2;
+		float dy, dxz;
+
+		DirectX::XMScalarSinCos(&dy, &dxz, latitude);
+
+		for (size_t j = 0; j <= horizontalSegments; j++)
+		{
+			const float longitude = float(j) * DirectX::XM_2PI / float(horizontalSegments);
+			float dx, dz;
+
+			DirectX::XMScalarSinCos(&dx, &dz, longitude);
+
+			dx *= dxz;
+			dz *= dxz;
+
+			const DirectX::XMVECTOR normal = DirectX::XMVectorSet(dx, dy, dz, 0);
+
+			DirectX::XMFLOAT3 pos;
+			DirectX::XMStoreFloat3(&pos, DirectX::XMVectorScale(normal, radius));
+			sphere->vertices.push_back(pos.x);
+			sphere->vertices.push_back(pos.y);
+			sphere->vertices.push_back(pos.z);
+		}
+	}
+
+	const size_t stride = horizontalSegments + 1;
+
+	for (size_t i = 0; i < verticalSegments; i++)
+	{
+		for (size_t j = 0; j <= horizontalSegments; j++)
+		{
+			const size_t nextI = i + 1;
+			const size_t nextJ = (j + 1) % stride;
+
+			index_push_back(sphere->indices, i * stride + j);
+			index_push_back(sphere->indices, nextI * stride + j);
+			index_push_back(sphere->indices, i * stride + nextJ);
+
+			index_push_back(sphere->indices, i * stride + nextJ);
+			index_push_back(sphere->indices, nextI * stride + j);
+			index_push_back(sphere->indices, nextI * stride + nextJ);
+		}
+	}
 
     return sphere;
 }

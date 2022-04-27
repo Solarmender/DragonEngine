@@ -16,6 +16,8 @@ public:
     virtual void render();
 
     Transform& getTransform();
+
+	DragonEngine* getEngine();
 protected:
 	Transform transform;
 

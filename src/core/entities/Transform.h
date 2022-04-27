@@ -11,6 +11,10 @@ public:
 
     void moveAbsolute(float x, float y, float z);
 
+	void setPosition(float x, float y, float z);
+	void setRotation(float x, float y, float z);
+	void setScale(float x, float y, float z);
+
     DirectX::XMFLOAT3 position;
     DirectX::XMFLOAT3 rotation;
     DirectX::XMFLOAT3 scale;
